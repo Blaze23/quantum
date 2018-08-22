@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>QHO</title>
+    <link rel="stylesheet" href="https://manglekuo.com/i-v/styles.css?v=2">
+    <link rel="stylesheet" href="../util/navigation.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="http://www.numericjs.com/lib/numeric-1.2.6.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.15.0/math.min.js"></script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+</head>
+<body>
+    <div class="container">
+        <h1>Quantum Harmonic Oscillator</h1>
+        <div class="row">
+            <!-- Graph -->
+            <div class="five columns">
+                <div id='graph' style="width:400px; height:400px;"></div>
+                <div class ="info">
+                    <p>
+                        <strong>E = <span id = "eigenvalue"></span> \(\hbar\omega\)</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!--Bottons-->
+            <div class="seven columns">
+                <ul class = "tab-nav">
+                    <li><a class="button active" id = "tiseBtn" onclick = "QHO:tabChange('tise','tiseBtn')">TISE</a></li>
+                    <li><a class="button" id = "energyBtn" onclick = "QHO:tabChange('energy','energyBtn')">Energy eigenstates</a></li>
+                </ul>
+                <button type = "button" id = "obs" onclick = "QHO:collapse();">Observe</button>
+                <button type = "button" id = "reset" onclick = "QHO:reset()">Reset</button>
+                <button type = "button" id = "rnd" onclick = "QHO:randomise()">Randomise</button>
+
+                <div class = "tab-content">
+                    <div class="tab-pane active" id="tise">
+    
+                        <p>
+                            Simple harmonic oscillators are ever present in the world of physics.
+                            Because any minimum of a function, to first order, can be approximated as a 
+                            simple harmonic oscillator, the SHO potential is found in many areas of physics.
+                        </p>
+    
+                        <p>
+                            In this visualisation we will be looking at the time-independent Schrodinger equation (TISE)
+                            applied to the simple harmonic oscillator potential - a simple quadratic function. 
+                            
+                            \[
+                                -\frac{\hbar^2}{2m}\frac{d^2\psi}{dx^2} + V(x)\psi = E\psi
+                            \]
+                            
+                            Where
+    
+                            \[
+                                V(x) = \frac{1}{2}m\omega x^2
+                            \]
+                        </p>
+
+                    </div>
+
+                    <div class="tab-pane" id="energy">
+
+                        <p>
+                            Bound states exist as a linear sum of energy eigenstates - functions that have a single energy
+                            value (eigenvalue) associated with them. These functions satisfy the above TISE. In order to create a
+                            time-dependent wavefunction, each eigenstate is multiplied by a complex exponential (for time evolution),
+                            and a constant to ensure that the end result is normalised. These, when added together as a linear sum,
+                            form a valid bound state solution for the quantum harmonic oscillator.
+                        </p>
+    
+                        <p>
+                            Upon measuring the energy of the state, we say that we are carrying out an observation. This causes
+                            the wavefunction to collapse to a single energy eigenstate - if the system is left undisturbed, any
+                            future energy measurements will return the same energy value.
+                        </p>
+    
+                        <p>
+                            How is this eigenstate selected, when the wavefunction is a sum of many different eigenstates? This is
+                            a purely random process, with the probability of each eigenstate being selected calculated from the
+                            coefficient of the eigenstate. These coefficients give a discrete probability distribution, and due to this,
+                            the coefficients must all sum up to 1.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src=objects.js></script>
+    <script src=QHO.js></script>
+</body>
+
+</html>
