@@ -223,13 +223,6 @@ function randomise(){
 
 
 function main() {
-    /*$("input[type=range]").each(function () {
-        $(this).on('input', function(){
-            $("#"+$(this).attr("id") + "Display").text( $(this).val() + $("#"+$(this).attr("id") + "Display").attr("data-unit") );
-            updatePlot();
-        });
-    });*/
-
     dx = xRange/N;
 
     initPlot();
@@ -251,8 +244,6 @@ function tabChange(idName, btnName){
 
     showTab.className = "tab-pane active";
     activeBtn.className = "button active";
-
-
 }
 
 function sliderChange(){
