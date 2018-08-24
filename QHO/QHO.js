@@ -8,9 +8,11 @@ var hbar = 1;
 var N = 2000;
 var dx;
 var xRange = 20;
-var coeffs = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var coeffs = [1, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0];
+var userCoeffs = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var ENUM = 11;
 var observed = false;
+var userShow = false;
 
 var hermCoeffs = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -75,7 +77,7 @@ function eigenstate(n, c, xArr, hermArr){
         var c3 = Math.exp(-m*w*Math.pow(x, 2)/(2*hbar));
         var c4 = hermite(n, Math.sqrt(m*w/hbar)*x);
 
-        qhoVal = c*c1*c2*c3*c4;
+        qhoVal = Math.sqrt(c)*c1*c2*c3*c4;
 
         hermArr[i] += qhoVal;
 
@@ -85,21 +87,22 @@ function eigenstate(n, c, xArr, hermArr){
 
 }
 
-function QHOstate(){
+function QHOstate(coeffArray){
     var sum = 0;
     var data = setArr();
 
     for(var i=0; i<ENUM; i++){
-        sum += coeffs[i];
+        if(!isNaN(coeffArray[i])){
+            sum += coeffArray[i];
+        }
     }
 
-    for(var i=0; i<ENUM; i++){
-        var c = coeffs[i]/sum;
-        data[1] = eigenstate(i, c, data[0], data[1]);
+    if(sum != 0 && !isNaN(sum)){
+        for(var i=0; i<ENUM; i++){
+            var c = coeffArray[i]/sum;
+            data[1] = eigenstate(i, c, data[0], data[1]);
+        }
     }
-
-    /*hermArr = eigenstate(1, 0.5, xArr, hermArr);
-    hermArr = eigenstate(2, 0.5, xArr, hermArr);*/
 
     return data;
 }
@@ -122,7 +125,7 @@ function setArr(){
 //Plots
 function initPlot() {
     Plotly.purge("graph");
-    var graphData = QHOstate();
+    var graphData = QHOstate(coeffs);
 
     var data = [{
         x: graphData[0],
@@ -137,6 +140,7 @@ function initPlot() {
     })
 
     Plotly.newPlot("graph", data, layout);
+    userShow = false;
 
     return;
 }
@@ -174,7 +178,7 @@ function collapse() {
 
         var eigenvalue = select();
 
-        graphData[1] = eigenstate(eigenvalue, 0.4, graphData[0], graphData[1]);
+        graphData[1] = eigenstate(eigenvalue, 1, graphData[0], graphData[1]);
 
         var data = [{
             x: graphData[0],
@@ -217,6 +221,7 @@ function randomise(){
     reset();
 }
 
+
 function main() {
     /*$("input[type=range]").each(function () {
         $(this).on('input', function(){
@@ -250,5 +255,36 @@ function tabChange(idName, btnName){
 
 }
 
+function sliderChange(){
+    userCoeffs[0] = parseInt($('#zero').val());
+    userCoeffs[1] = parseInt($('#one').val());
+    userCoeffs[2] = parseInt($('#two').val());
+    userCoeffs[3] = parseInt($('#three').val());
+    userCoeffs[4] = parseInt($('#four').val());
+    userCoeffs[5] = parseInt($('#five').val());
+    userCoeffs[6] = parseInt($('#six').val());
+    userCoeffs[7] = parseInt($('#seven').val());
+    userCoeffs[8] = parseInt($('#eight').val());
+    userCoeffs[9] = parseInt($('#nine').val());
+
+    plotUserWave();
+}
+
+function plotUserWave(){
+    var graphData = QHOstate(userCoeffs);
+
+    var data = [{
+        x: graphData[0],
+        y: graphData[1],
+        type: 'line'
+      }];
+
+    if(userShow){
+        Plotly.deleteTraces("graph", 2);
+    }
+
+    Plotly.plot("graph", data);  
+    userShow = true; 
+}
 
 $(document).ready(main);

@@ -32,7 +32,8 @@
             <div class="seven columns">
                 <ul class = "tab-nav">
                     <li><a class="button active" id = "tiseBtn" onclick = "QHO:tabChange('tise','tiseBtn')">TISE</a></li>
-                    <li><a class="button" id = "energyBtn" onclick = "QHO:tabChange('energy','energyBtn')">Energy eigenstates</a></li>
+                    <li><a class="button" id = "energyBtn" onclick = "QHO:tabChange('energy','energyBtn')">Eigenstates</a></li>
+                    <li><a class="button" id = "slidersBtn" onclick = "QHO:tabChange('sliders','slidersBtn')">Custom</a></li>
                 </ul>
                 <button type = "button" id = "obs" onclick = "QHO:collapse();">Observe</button>
                 <button type = "button" id = "reset" onclick = "QHO:reset()">Reset</button>
@@ -87,11 +88,81 @@
                             the coefficients must all sum up to 1.
                         </p>
                     </div>
+
+                    <div class="tab-pane" id="sliders">
+                        <div class = "row">
+                            <div class = "four columns">
+                                <div id="1-slider">
+                                    <label for="one" class="sliderTitle">Coefficient for first excited state:</label>
+                                    <input type="range" id="one" name="one" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+
+                                <div id="4-slider">
+                                    <label for="four" class="sliderTitle">Coefficient for fourth excited state:</label>
+                                    <input type="range" id="four" name="four" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+
+                                <div id="7-slider">
+                                    <label for="seven" class="sliderTitle">Coefficient for seventh excited state:</label>
+                                    <input type="range" id="seven" name="seven" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+
+                            </div>
+
+                            <div class = "four columns">
+                                <div id="2-slider">
+                                    <label for="two" class="sliderTitle">Coefficient for second excited state:</label>
+                                    <input type="range" id="two" name="two" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+
+                                <div id="5-slider">
+                                    <label for="five" class="sliderTitle">Coefficient for fifth excited state:</label>
+                                    <input type="range" id="five" name="five" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+
+                                <div id="8-slider">
+                                    <label for="eight" class="sliderTitle">Coefficient for eighth excited state:</label>
+                                    <input type="range" id="eight" name="eight" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+
+                                <div id="0-slider">
+                                    <label for="zero" class="sliderTitle">Coefficient for ground state:</label>
+                                    <input type="range" id="zero" name="zero" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+                            </div>
+
+                            <div class = "four columns">
+                                <div id="3-slider">
+                                    <label for="three" class="sliderTitle">Coefficient for third excited state:</label>
+                                    <input type="range" id="three" name="three" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+
+                                <div id="6-slider">
+                                    <label for="six" class="sliderTitle">Coefficient for sixth excited state:</label>
+                                    <input type="range" id="six" name="six" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+
+                                <div id="9-slider">
+                                    <label for="nine" class="sliderTitle">Coefficient for ninth excited state:</label>
+                                    <input type="range" id="nine" name="nine" min="0" max="3" step = "1" value="0" onchange = "QHO:sliderChange()">
+                                    <span class="sliderMin">0</span><span class="sliderMax">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src=objects.js></script>
     <script src=QHO.js></script>
 </body>
 
