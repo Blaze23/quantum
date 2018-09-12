@@ -10,9 +10,14 @@ var dx;
 var xRange = 20;
 var coeffs = [1, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0];
 var userCoeffs = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var countStates = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var ENUM = 11;
 var observed = false;
 var userShow = false;
+var anim = false;
+var dt = 0.1;
+var t = 0;
+var selectedState = 0;
 
 var hermCoeffs = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -65,9 +70,10 @@ function hermite(n, x){
     return hermVal;
 }
 
-function eigenstate(n, c, xArr, hermArr){
+function eigenstate(n, c, xArr, hermArr, t){
     var qhoVal;
     var f = factorialRt(n);
+    var E = n+0.5;
 
     for(var i=0; i<N; i++){
         var x = xArr[i]
@@ -77,7 +83,7 @@ function eigenstate(n, c, xArr, hermArr){
         var c3 = Math.exp(-m*w*Math.pow(x, 2)/(2*hbar));
         var c4 = hermite(n, Math.sqrt(m*w/hbar)*x);
 
-        qhoVal = Math.sqrt(c)*c1*c2*c3*c4;
+        qhoVal = Math.sqrt(c)*c1*c2*c3*c4*Math.cos(E*w*t);
 
         hermArr[i] += qhoVal;
 
@@ -87,7 +93,7 @@ function eigenstate(n, c, xArr, hermArr){
 
 }
 
-function QHOstate(coeffArray){
+function QHOstate(coeffArray, t){
     var sum = 0;
     var data = setArr();
 
@@ -100,7 +106,7 @@ function QHOstate(coeffArray){
     if(sum != 0 && !isNaN(sum)){
         for(var i=0; i<ENUM; i++){
             var c = coeffArray[i]/sum;
-            data[1] = eigenstate(i, c, data[0], data[1]);
+            data[1] = eigenstate(i, c, data[0], data[1], t);
         }
     }
 
@@ -122,10 +128,69 @@ function setArr(){
     return [xArr, hermArr, vArr];
 }
 
+function update(){
+    if(t<Math.pow(2, 7)){
+        t += dt;
+    }
+    else{
+        t = 0;
+    }
+    var graphData = setArr();
+    
+    if(observed){
+        graphData[1] = eigenstate(selectedState, 1, graphData[0], graphData[1], t);
+    }
+    else{
+        graphData = QHOstate(coeffs, t);
+    }
+
+    var trace = [{
+        x: graphData[0],
+        y: graphData[1],
+        type: 'line'
+      }];
+
+
+    if(userShow){
+        var userData = QHOstate(userCoeffs, t);
+
+        trace.push({
+            x: userData[0],
+            y: userData[1],
+            type: 'line'
+        });
+    }
+
+    var animData = {
+        data: trace,
+        traces: [0, 2],
+        layout: {}
+    };
+
+    var animSetup = {
+        transition: {
+            duration: 0
+        },
+        frame: {
+            duration: 50,
+            redraw: false
+        }
+    };
+    
+
+    Plotly.animate('graph', animData, animSetup);
+
+    if(anim){
+        requestAnimationFrame(update);
+    }
+
+}
+
 //Plots
 function initPlot() {
     Plotly.purge("graph");
-    var graphData = QHOstate(coeffs);
+    var graphData = QHOstate(coeffs, 0);
+    t=0;
 
     var data = [{
         x: graphData[0],
@@ -137,10 +202,23 @@ function initPlot() {
         x: graphData[0],
         y: graphData[2],
         type: 'line'
-    })
+    });
+
+    if(userShow){
+        var userData = QHOstate(userCoeffs, 0);
+
+        data.push({
+            x: userData[0],
+            y: userData[1],
+            type: 'line'
+        });
+    }
 
     Plotly.newPlot("graph", data, layout);
-    userShow = false;
+
+    if(anim){
+        requestAnimationFrame(update);
+    }
 
     return;
 }
@@ -172,36 +250,56 @@ function select(){
 function collapse() {
     if(!observed){
         observed = true;
+        userShow = false;
         Plotly.purge("graph");
 
         var graphData = setArr();
 
-        var eigenvalue = select();
+        selectedState = select();
+        t = 0;
+        
+        graphData[1] = eigenstate(selectedState, 1, graphData[0], graphData[1], t);
 
-        graphData[1] = eigenstate(eigenvalue, 1, graphData[0], graphData[1]);
-
-        var data = [{
+        var trace = [{
             x: graphData[0],
             y: graphData[1],
             type: 'line'
         }];
-
-        data.push({
+        
+        trace.push({
             x: graphData[0],
             y: graphData[2],
             type: 'line'
         })
 
-        Plotly.newPlot("graph", data, layout);
-        Plotly.plot;
+        /*
+        var animData = {
+            data: trace,
+            traces: [0],
+            layout: {}
+        };
 
-        var energyUnits = eigenvalue + 0.5;
+        var trans = {
+            transition: {
+                duration: 500,
+                easing: 'cubic-in-out'
+            }
+        };
+
+        Plotly.animate("graph", animData, trans);
+        */
+
+        Plotly.newPlot("graph", trace, layout);
+
+        var energyUnits = selectedState + 0.5;
 
         var eigenString = energyUnits.toString();
 
         document.getElementById("eigenvalue").innerHTML = eigenString;
+        countStates[selectedState] += 1;
+        document.getElementById(selectedState.toString()).innerHTML = countStates[selectedState];
+        requestAnimationFrame(update);
     }
-    return;
 }
 
 function reset(){
@@ -216,9 +314,15 @@ function randomise(){
     for(var i=0; i<ENUM; i++){
         rnd = Math.round(3*Math.random());
         coeffs[i] = rnd;
+        countStates[i] = 0;
     }
 
     reset();
+
+    for(var i = 0; i<ENUM; i++){
+        document.getElementById(i.toString()).innerHTML = 0;
+        //document.getElementById(i.toString()).innerHTML += coeffs[i];
+    }
 }
 
 
@@ -262,7 +366,11 @@ function sliderChange(){
 }
 
 function plotUserWave(){
-    var graphData = QHOstate(userCoeffs);
+
+    userShow = true;
+    initPlot();
+
+    /*var graphData = QHOstate(userCoeffs, t);
 
     var data = [{
         x: graphData[0],
@@ -274,8 +382,35 @@ function plotUserWave(){
         Plotly.deleteTraces("graph", 2);
     }
 
-    Plotly.plot("graph", data);  
-    userShow = true; 
+    Plotly.plot("graph", data);*/
+}
+
+function animateClick(){
+    anim = !anim;
+    initPlot();
+}
+
+function manyTrials(){
+    reset();
+
+    for(var i=0; i<100; i++){
+        observe();
+    }
+
+    for(var i=0; i<ENUM; i++){
+        document.getElementById(i.toString()).innerHTML = countStates[i];
+    }
+}
+
+function observe(){
+    var selectedState = select();
+    
+    countStates[selectedState] += 1;
+}
+
+function sleep(delay) {
+    var start = new Date().getTime();
+    while (new Date().getTime() < start + delay);
 }
 
 $(document).ready(main);

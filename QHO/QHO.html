@@ -25,6 +25,7 @@
                 <div class ="info">
                     <p>
                         <strong>E = <span id = "eigenvalue"></span> \(\hbar\omega\)</strong>
+                        <span id = "time"></span>
                     </p>
                 </div>
             </div>
@@ -35,10 +36,13 @@
                     <li><a class="button active" id = "tiseBtn" onclick = "QHO:tabChange('tise','tiseBtn')">TISE</a></li>
                     <li><a class="button" id = "energyBtn" onclick = "QHO:tabChange('energy','energyBtn')">Eigenstates</a></li>
                     <li><a class="button" id = "slidersBtn" onclick = "QHO:tabChange('sliders','slidersBtn')">Custom</a></li>
+                    <li><a class = "button" id = "countBtn" onclick = "QHO:tabChange('count','countBtn')">Count</a></li>
                 </ul>
                 <button type = "button" id = "obs" onclick = "QHO:collapse();">Observe</button>
                 <button type = "button" id = "reset" onclick = "QHO:reset()">Reset</button>
                 <button type = "button" id = "rnd" onclick = "QHO:randomise()">Randomise</button>
+                <button type = "button" id = "anim" onclick = "QHO:animateClick()">Anim Toggle</button>
+                <button type = "button" id = "manyTrials" onclick = "QHO:manyTrials()">100 Observations</button>
 
                 <div class = "tab-content">
                     <div class="tab-pane active" id="tise">
@@ -88,6 +92,20 @@
                             coefficient of the eigenstate. These coefficients give a discrete probability distribution, and due to this,
                             the coefficients must all sum up to 1.
                         </p>
+                    </div>
+
+                    <div class = "tab-pane" id = "count">
+                        <p>Ground State observed <span id = "0">0</span> times.</p>
+                        <p>First excited State observed <span id = "1">0</span> times.</p>
+                        <p>Second excited State observed <span id = "2">0</span> times.</p>
+                        <p>Third excited State observed <span id = "3">0</span> times.</p>
+                        <p>Fourth excited State observed <span id = "4">0</span> times.</p>
+                        <p>Fifth excited State observed <span id = "5">0</span> times.</p>
+                        <p>Sixth excited State observed <span id = "6">0</span> times.</p>
+                        <p>Seventh excited State observed <span id = "7">0</span> times.</p>
+                        <p>Eighth excited State observed <span id = "8">0</span> times.</p>
+                        <p>Ninth excited State observed <span id = "9">0</span> times.</p>
+    
                     </div>
 
                     <div class="tab-pane" id="sliders">
